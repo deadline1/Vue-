@@ -15,30 +15,8 @@
     </div>
     <p>{{message}}</p>
   </div>
-
-  <script src="../../node_modules/vue/dist/vue.js"></script>
+  
   <script>
-    console.log(root) // 未挂载的模板
-
-    // 步骤拆解
-    // 1. 拿到模板
-    // 2. 拿到数据（data）
-    // 3. 将数据与模板结合，得到的是HTML元素
-    // 4. 放到页面中
-
-    // 1
-    let tmpNode = document.querySelector('#root')
-    
-    let generateNode = tmpNode.cloneNode(tmpNode) // DOM是引用类型，不进行拷贝的化，原来的模板就会没有了
-    // 2
-    let data = {
-      name: '一个name',
-      message: '一个message'
-    }
-    // 3. 将数据放到模板中
-    // 一般使用递归
-    // 在现在这个案例中templkate是DOM元素
-    // 在真正的Vue源码中是DOM -> 字符串模板 -> VNode -> 真正的DOM
     function compiler(template, data) {
       let childNodes = template.childNodes
       let rkuohao = /\{\{(.+?)\}\}/g
@@ -64,19 +42,38 @@
         }
       }
     }
+    function JGVue(options) { // 创建构造函数
+      this._data = options.data
+      this._el = options.el
 
-    compiler(generateNode, data)
-    console.log(generateNode)
-
-
-    // 4
-    root.parentNode.replaceChild(generateNode, root)
-
-    // 上述的思路有很大问题
-    // 1. Vue使用的是虚拟DOM
-    // 2. 只考虑了单属性({{name}})，而Vue中大量的使用层级({{child.name.firstName}})
-    // 3. 代码没有整合
-    // test
-    </script>
+      // 准备模板
+      this.$el = this._templateDOM = document.querySelector(this._el)
+      this._parent = this._templateDOM.parentNode
+      // 渲染工作
+      this.render()
+    }
+    /* 将模板结合数据，得到HTML加载到页面中 */
+    JGVue.prototype.render = function() {
+      this.compiler()
+    }
+    /* 编译将模板和数据结合得到真正的DOM元素 */
+    JGVue.prototype.compiler = function() {
+      let realHTMLDOM = this._templateDOM.cloneNode(true) // 用模板拷贝得到一个准DOM
+      compiler(realHTMLDOM, this._data)
+      this.update(realHTMLDOM)
+    }
+    /* 将DOM的元素放到页面中 */
+    JGVue.prototype.update = function(real) {
+      this._parent.replaceChild(real, document.querySelector('#root'))
+    }
+    // 想想怎么用？
+    let app = new JGVue({
+      el: '#root',
+      data: {
+        name: 'tellme',
+        message: 'info'
+      }
+    })
+  </script>
 </body>
 </html>

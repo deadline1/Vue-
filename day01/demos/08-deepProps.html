@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- 写模板 -->
+  <div id="root">
+    <div>
+      <div>
+        <p>{{name.firstname}}</p>
+      </div>
+    </div>
+    <p>{{message}}</p>
+  </div>
+
+  <script>
+    function compiler(template, data) {
+      let childNodes = template.childNodes
+      let rkuohao = /\{\{(.+?)\}\}/g
+      for(let i = 0; i < childNodes.length; i++) {
+        let type = childNodes[i].nodeType // 1 元素， 3 文本节点
+        // console.log(type)
+        if(type === 3) {
+          // 文本节点，可以判断里面是否有{{}}插值
+          let txt = childNodes[i].nodeValue
+          txt = txt.replace(rkuohao, function(_, g) {
+            // replace使用正则匹配一次，函数就会被调用一次
+            // 函数的第0个参数表示匹配到的内容
+            // 函数的第n个参数表示震泽中的第n组
+            let key = g.trim() // 去头尾空格
+            let value = getValueByPath(data, key)
+            return value
+          })
+          // 注意：txt现在和DOM元素是没有关系的
+          childNodes[i].nodeValue = txt
+        } else if(type === 1) {
+          // 元素，考虑它有没有子元素，是否需要将其子元素进行判断是否需要赋值
+          compiler(childNodes[i], data)
+        }
+      }
+    }
+    function JGVue(options) { // 创建构造函数
+      this._data = options.data
+      this._el = options.el
+
+      // 准备模板
+      this.$el = this._templateDOM = document.querySelector(this._el)
+      this._parent = this._templateDOM.parentNode
+      // 渲染工作
+      this.render()
+    }
+    /* 将模板结合数据，得到HTML加载到页面中 */
+    JGVue.prototype.render = function() {
+      this.compiler()
+    }
+    /* 编译将模板和数据结合得到真正的DOM元素 */
+    JGVue.prototype.compiler = function() {
+      let realHTMLDOM = this._templateDOM.cloneNode(true) // 用模板拷贝得到一个准DOM
+      compiler(realHTMLDOM, this._data)
+      this.update(realHTMLDOM)
+    }
+    /* 将DOM的元素放到页面中 */
+    JGVue.prototype.update = function(real) {
+      this._parent.replaceChild(real, document.querySelector('#root'))
+    }
+    // 想想怎么用？
+    let app = new JGVue({
+      el: '#root',
+      data: {
+        name: {
+          firstname: 'first',
+          lastname: 'last'
+        },
+        message: 'info'
+      }
+    })
+
+    // 通过传字符串来访问一个对象
+    function getValueByPath(obj, path) {
+      let paths = path.split('.')
+
+      let res = obj
+      let prop 
+      while(prop = paths.shift()) {
+        res = res[prop]
+      }
+      return res
+    }
+  </script>
+
+</body>
+</html>
