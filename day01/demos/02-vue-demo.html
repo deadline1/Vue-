@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- 写模板 -->
+  <div id="root">
+    <p>{{name}}</p>
+    <p>{{message}}</p>
+  </div>
+
+  <script src="../../node_modules/vue/dist/vue.js"></script>
+  <script>
+    console.log(root) // 未挂载的模板
+    // 第二步 创建实例
+    let app = new Vue({
+      el: '#root',
+      data: {
+        name: 'realize',
+        message: 'all my dream'
+      }
+    })
+    // 第三步 挂载：这种用法的挂载在vue.js中实现
+    console.log(root) // 已挂载的模板
+  </script>
+</body>
+</html>

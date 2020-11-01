@@ -1,0 +1,22 @@
+{
+  "name": "vue-source-code",
+  "version": "1.0.0",
+  "description": "关于Vue源码的学习（从手写模仿到理解代码）",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deadline1/Vue-Source-code.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deadline1/Vue-Source-code/issues"
+  },
+  "homepage": "https://github.com/deadline1/Vue-Source-code#readme",
+  "dependencies": {
+    "vue": "^2.6.12"
+  }
+}
