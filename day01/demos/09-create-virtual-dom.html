@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root">
+        <div>
+            <div>hello1</div>
+            <div>hello2</div>
+            <div>hello3</div>
+            <ul>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        // 为什么使用虚拟DOM？性能
+        // <div> => { tag: 'div' }
+        // 文本节点 => { tag: undefined, value: '文本节点' }
+        // <div title="1" class="c"> => { tag: 'div', data: {title: '1', class: 'c'} }
+        // <div><div></div></div> => {tag: 'div', children: [{ tag: 'div' }]}
+
+        class Vnode {
+            constructor(tag, data, value, type) {
+                this.tag = tag && tag.toLowerCase()
+                this.data = data
+                this.value = value
+                this.type = type
+                this.children = []
+            }
+
+            appendChildren(Vnode) {
+                this.children.push(Vnode)
+            }
+        }
+
+        function getVnode(node) {
+            let nodeType = node.nodeType
+            let _vnode = null
+            if(nodeType === 1) {
+                let nodeName = node.nodeName
+                let attrs = node.attributes
+                let _attrObj = {}
+                for(let i = 0; i < attrs.length; i++) {
+                    _attrObj[attrs[i].nodeName] = attrs[i].nodeValue
+                }
+                _vnode = new Vnode(nodeName, _attrObj, undefined, nodeType)
+
+                // 考虑node的子元素
+                let childNodes = node.childNodes
+                for(let i = 0; i < childNodes.length; i++) {
+                    _vnode.appendChildren(getVnode(childNodes[i]))
+                }
+            } else if(nodeType === 1) {
+                _vnode = new Vnode(undefined, undefined, node.nodeValue, nodeType)
+            }
+
+            return _vnode
+        }
+
+        let root = document.querySelector('#root')
+        console.log(root)
+        let  vroot = getVnode(root)
+        console.log(vroot)
+    </script>
+</body>
+</html>
