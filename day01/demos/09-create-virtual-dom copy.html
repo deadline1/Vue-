@@ -40,24 +40,24 @@
         }
 
         function getVnode(node) {
-            let nodeType = node.nodeType // 节点类型，1为元素节点，3为文本节点
+            let nodeName = node.nodeName
+            let _attrs = node.attributes
+            let nodeValue = node.nodeValue
+            let data = {}
+            let nodeType = node.nodeType
             let _vnode = null
+            
             if(nodeType === 1) {
-                let nodeName = node.nodeName // 元素名（div）
-                let attrs = node.attributes // attributes属性返回指定节点的属性集合，即NamedNodeMap
-                let _attrObj = {}
-                for(let i = 0; i < attrs.length; i++) {
-                    _attrObj[attrs[i].nodeName] = attrs[i].nodeValue
+                for(let i = 0; i < _attrs.length; i++) {
+                    data[_attrs[i].nodeName] = _attrs[i].value
+                    console.log('1')
                 }
-                _vnode = new Vnode(nodeName, _attrObj, undefined, nodeType)
-
-                // 考虑node的子元素
-                let childNodes = node.childNodes
-                for(let i = 0; i < childNodes.length; i++) {
-                    _vnode.appendChildren(getVnode(childNodes[i]))
+                _vnode = new Vnode(nodeName, data, nodeValue, nodeType)
+                for(let i = 0; i < node.childNodes.length; i++) {
+                    _vnode.appendChildren(getVnode(node.childNodes[i]))
                 }
             } else if(nodeType === 3) {
-                _vnode = new Vnode(undefined, undefined, node.nodeValue, nodeType)
+                _vnode = new Vnode(undefined, undefined, nodeValue, nodeType)
             }
 
             return _vnode
@@ -67,7 +67,6 @@
         console.log(root.nodeName)
         console.log(root.attributes)
         console.log(root.nodeType)
-        console.log(root.childNodes)
         let vroot = getVnode(root)
         console.log(vroot)
     </script>

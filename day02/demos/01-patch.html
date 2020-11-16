@@ -12,9 +12,9 @@
             <div>hello2</div>
             <div>hello3</div>
             <ul>
-                <li></li>
-                <li></li>
-                <li></li>
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
             </ul>
         </div>
     </div>
@@ -63,13 +63,41 @@
             return _vnode
         }
 
+        // 将VNode转换为真正的DOM
+        function parseVNode(vnode) {
+            // 创建真实DOM
+            let type = vnode.type
+            let _node = null
+            if(type === 3) {
+                return document.createTextNode(vnode.value)
+            } else if(type === 1) {
+                _node = document.createElement(vnode.tag)
+                // 属性
+                let data = vnode.data // 现在这个data是键值对
+                Object.keys(data).forEach((key) => {
+                    let attrName = key
+                    let attrValue = data[key]
+                    _node.setAttribute(attrName, attrValue)
+                })
+
+                // 子元素
+                let children = vnode.children
+                children.forEach((subvnode) => {
+                    _node.appendChild(parseVNode(subvnode))
+                })
+            }
+            return _node
+        }
+
         let root = document.querySelector('#root')
-        console.log(root.nodeName)
-        console.log(root.attributes)
-        console.log(root.nodeType)
-        console.log(root.childNodes)
+        // console.log(root.nodeName)
+        // console.log(root.attributes)
+        // console.log(root.nodeType)
+        // console.log(root.childNodes)
         let vroot = getVnode(root)
-        console.log(vroot)
+        let dom2 = parseVNode(vroot)
+        // console.log(vroot)
+        console.log(dom2)
     </script>
 </body>
 </html>
