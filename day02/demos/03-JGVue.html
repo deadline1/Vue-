@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function JGVue(options) {
+            this._data = options._data
+            this._el = options.el
+
+            this.mount() // 挂载
+        }
+
+        JGVue.prototype.mount = function() {
+            // 提供一个render方法：生成虚拟DOM
+            this.render = createRenderFn()
+            
+            this.mountComponent()
+        }
+        JGVue.prototype.mountComponent = function() {
+            // 执行mountComponent()函数
+            let mount = () => {
+                this.update(this.render())
+            }
+            mount.call(this) // 本质上应该交给watcher来调用
+        }
+
+        // 这里是生成render函数，目的是缓存抽象语法树（我们使用虚拟DOM来模拟）
+        JGVue.prototype.createRenderFn = function() {
+
+        }
+
+        // 将虚拟DOM渲染到页面中：diff算法就在这里
+        JGVue.prototype.update = function() {
+            
+        }
+    </script>
+</body>
+</html>

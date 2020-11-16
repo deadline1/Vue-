@@ -13,7 +13,7 @@
             let set = {} // 集合
             tags.forEach(key => set[key] = true)
             return function(tagName) {
-                return !!set[tagName.toLowerCase()]
+                return !!set[tagName.toLowerCase()] // !!是为了使undefined返回false
             }
         }
 
