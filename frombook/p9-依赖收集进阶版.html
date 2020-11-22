@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        window.target = function(newVal, val) {
+            console.log(`将数据从${val}=>${newVal}`)
+            console.log('假设依赖是一个函数，保存在window上')
+        }
+
+        class Dep {
+            constructor() {
+                this.subs = []
+            }
+            addSub(sub) {
+                this.subs.push(sub)
+            }
+            removeSub(sub) {
+                removeSub(this.subs, sub)
+            }
+            depend() {
+                if(window.target) {
+                    this.addSub(window.target)
+                }
+            }
+            notify() {
+                let subs = this.subs.slice()
+                for(let i = 0; i < subs.length; i++) {
+                    subs[i].update() // 我是搞不明白这update是什么玩意
+                }
+            }
+        }
+
+        function removeSub(arr, item) {
+            if(arr.length) {
+                let index = arr.indexOf(item)
+                if(index > -1) {
+                    return arr.splice(index, 1)
+                }
+            }
+        }
+
+        function defineReactive(data, key, val) {
+            let dep = new Dep()
+            Object.defineProperty(data, key, {
+                enumerable: true,
+                configurable: true,
+                get: function() {
+                    dep.depend()
+                    return val
+                },
+                set: function(newVal) {
+                    if(val === newVal) {
+                        return
+                    }
+                    val = newVal
+                    dep.notify()
+                }
+            })
+        }
+        
+        let obj = {
+            a: 1,
+            b: 2
+        }
+        defineReactive(obj, 'a', 3)
+        console.log(obj.a)
+        obj.a = 3
+        obj.a = '4'
+        obj.a = 5
+        console.log(obj.a)
+    </script>
+</body>
+</html>
