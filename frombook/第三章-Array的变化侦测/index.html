@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script type="module">
+        import Dep from './Dep.js'
+        // import demo1 from './demo1.js'
+        import {defineReactive} from './defineReactive.js'
+        import {parsePath} from './parsePath.js'
+        import Watcher from './Watcher.js'
+        import Observer from './Observer.js'
+        
+
+
+        let obj = {
+            c: {
+                name: 'dddd',
+                copyname: 'ddd'
+            },
+            name: 'deadline1'
+        }
+
+
+        // defineReactive(obj.c, 'name', 'deadline1')
+        let obs = new Observer(obj)
+
+        let watcher1 = new Watcher(obj, 'c.name', function(newVal, oldVal) {
+            console.log(`${oldVal}->${newVal}，触发watcher1函数`)
+        })
+        let watcher2 = new Watcher(obj, 'c.copyname', function(newVal, oldVal) {
+            console.log(`${oldVal}->${newVal}，触发watcher2函数`)
+        })
+
+
+        obj.c.name = '1'
+        obj.c.name = '2'
+        obj.c.copyname = '3'
+        obj.c.copyname = [1, 2]
+        obj.c.copyname.push(1)
+
+    </script>
+</body>
+</html>

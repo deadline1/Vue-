@@ -1,6 +1,8 @@
+import {parsePath} from './parsePath.js'
 export default class Watcher {
     constructor(vm, expOrFn, cb) {
         this.vm = vm
+        // 执行this.getter()，可以访问data.a.b.c的内容
         this.getter = parsePath(expOrFn)
         this.cb = cb
         this.value = this.get()

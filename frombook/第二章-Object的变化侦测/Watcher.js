@@ -1,12 +1,5 @@
-const parsePath = require('./parsePath')
-var window = require('./window')
-
-console.log(window)
-window = {
-    a: 'xxx'
-}
-
-module.exports = class Watcher {
+import {parsePath} from './parsePath.js'
+export default class Watcher {
     constructor(vm, expOrFn, cb) {
         this.vm = vm
         // 执行this.getter()，可以访问data.a.b.c的内容

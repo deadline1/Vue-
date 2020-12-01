@@ -1,5 +1,5 @@
 const bailRE = /[^\w.$]/
-function parsePath(path) {
+export function parsePath(path) {
     if(bailRE.test(path)) {
         return
     }
@@ -12,5 +12,3 @@ function parsePath(path) {
         return obj
     }
 }
-
-module.exports = parsePath

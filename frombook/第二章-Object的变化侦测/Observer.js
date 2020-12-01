@@ -1,6 +1,6 @@
- const Dep = require('./Dep')
- 
- class Observer {
+import Dep from './Dep.js'
+import {defineReactive} from './defineReactive.js'
+export default class Observer {
     constructor(value) {
         this.value = value
         if(!Array.isArray(value)) {
@@ -15,27 +15,3 @@
         }
     }
 }
-
-function defineReactive(data, key, val) {
-    if(typeof val === 'object') {
-        new Observer(val)
-    }
-    let dep = new Dep()
-    Object.defineProperty(data, key, {
-        enumerable: true,
-        configurable: true,
-        get: function() {
-            dep.depend()
-            return val
-        },
-        set: function(newVal) {
-            if(val === newVal) {
-                return
-            }
-            val = newVal
-            dep.notify()
-        }
-    })
-}
-
-module.exports = Observer
